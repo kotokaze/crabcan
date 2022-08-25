@@ -1,3 +1,4 @@
+use log::LevelFilter;
 use std::path::PathBuf;
 use structopt::StructOpt;
 
@@ -21,12 +22,23 @@ pub struct Args {
   pub mount_dir: PathBuf,
 }
 
+fn setup_log(level: LevelFilter) {
+  let mut builder = env_logger::Builder::from_default_env();
+  builder.format_timestamp_secs();
+  builder.filter_level(level);
+  builder.init();
+}
+
 pub fn parse_args() -> Args {
   let args: Args = Args::from_args();
 
-  /* Setup logging here */
-  // IF args.debug: Setup log at debug level
-  // ELSE: Setup log at info level
+  /* Setup logging */
+  let level: LevelFilter = if args.debug {
+    LevelFilter::Debug
+  } else {
+    LevelFilter::Info
+  };
+  setup_log(level);
 
   /* Validate args and return them */
   args
