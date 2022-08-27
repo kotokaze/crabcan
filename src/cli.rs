@@ -1,3 +1,5 @@
+use crate::errors::ErrCode;
+
 use log::LevelFilter;
 use std::path::PathBuf;
 use structopt::StructOpt;
@@ -29,7 +31,7 @@ fn setup_log(level: LevelFilter) {
   builder.init();
 }
 
-pub fn parse_args() -> Args {
+pub fn parse_args() -> Result<Args, ErrCode> {
   let args: Args = Args::from_args();
 
   /* Setup logging */
@@ -41,5 +43,5 @@ pub fn parse_args() -> Args {
   setup_log(level);
 
   /* Validate args and return them */
-  args
+  Ok(args)
 }
