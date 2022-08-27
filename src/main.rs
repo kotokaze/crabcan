@@ -3,9 +3,12 @@ mod config;
 mod container;
 mod errors;
 
-use std::process::exit;
-
 use errors::exit_with_retcode;
+
+#[macro_use]
+extern crate scan_fmt;
+
+use std::process::exit;
 
 fn main() {
   match cli::parse_args() {

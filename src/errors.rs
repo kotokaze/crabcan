@@ -4,6 +4,8 @@ use std::process::exit;
 #[derive(Debug)] // Arr&aw display with the format `{:?}`
 pub enum ErrCode {
   ArgumentInvalid(&'static str),
+  NotSupported(u8),
+  ContainerError(u8),
 }
 
 impl ErrCode {
