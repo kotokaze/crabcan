@@ -2,7 +2,9 @@ use std::fmt;
 use std::process::exit;
 
 #[derive(Debug)] // Arr&aw display with the format `{:?}`
-pub enum ErrCode {}
+pub enum ErrCode {
+  ArgumentInvalid(&'static str),
+}
 
 impl ErrCode {
   // Return the exit code for the error
@@ -15,6 +17,9 @@ impl ErrCode {
 impl fmt::Display for ErrCode {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match &self {
+      // Show argument error
+      ErrCode::ArgumentInvalid(elem) => write!(f, "Invalid argument: {}", elem),
+
       _ => write!(f, "{:?}", self),
     }
   }

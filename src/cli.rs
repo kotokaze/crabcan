@@ -43,5 +43,9 @@ pub fn parse_args() -> Result<Args, ErrCode> {
   setup_log(level);
 
   /* Validate args and return them */
+  if !args.mount_dir.exists() || !args.mount_dir.is_dir() {
+    return Err(ErrCode::ArgumentInvalid("mount"));
+  }
+
   Ok(args)
 }
