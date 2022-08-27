@@ -1,4 +1,6 @@
 mod cli;
+mod config;
+mod container;
 mod errors;
 
 use std::process::exit;
@@ -9,7 +11,7 @@ fn main() {
   match cli::parse_args() {
     Ok(args) => {
       log::info!("Args: {:?}", args);
-      exit_with_retcode(Ok(()))
+      exit_with_retcode(container::start(args));
     }
     Err(err) => {
       log::error!("Error while parsing args\n\t{}", err);
