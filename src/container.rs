@@ -3,18 +3,21 @@ use crate::config::ContainerOpts;
 use crate::errors::ErrCode;
 
 use nix::sys::utsname::{uname, UtsName};
+use nix::unistd::close;
+use std::os::unix::io::RawFd;
 
 pub const MIN_KERNEL_VERSION: f32 = 4.8;
 
 pub struct Container {
+  sockets: (RawFd, RawFd),
   config: ContainerOpts,
 }
 
 impl Container {
   pub fn new(args: Args) -> Result<Self, ErrCode> {
-    let config = ContainerOpts::new(args.command, args.uid, args.mount_dir)?;
+    let (config, sockets) = ContainerOpts::new(args.command, args.uid, args.mount_dir)?;
 
-    Ok(Self { config })
+    Ok(Self { sockets, config })
   }
 
   pub fn create(&mut self) -> Result<(), ErrCode> {
@@ -24,6 +27,17 @@ impl Container {
 
   pub fn clean_exit(&mut self) -> Result<(), ErrCode> {
     log::debug!("Cleaning container");
+
+    if let Err(err) = close(self.sockets.0) {
+      log::error!("Unable to close write socket: {:?}", err);
+      return Err(ErrCode::SocketError(3));
+    }
+
+    if let Err(err) = close(self.sockets.1) {
+      log::error!("Unable to close write socket: {:?}", err);
+      return Err(ErrCode::SocketError(4));
+    }
+
     Ok(())
   }
 }

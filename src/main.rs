@@ -2,6 +2,7 @@ mod cli;
 mod config;
 mod container;
 mod errors;
+mod ipc;
 
 use errors::exit_with_retcode;
 
@@ -18,7 +19,7 @@ fn main() {
     }
     Err(err) => {
       log::error!("Error while parsing args\n\t{}", err);
-      exit(err.get_retcode())
+      exit(err.get_retcode());
     }
   };
 }
